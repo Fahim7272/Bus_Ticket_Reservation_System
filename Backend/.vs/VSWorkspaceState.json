@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Application.Contracts",
+    "\\Domain",
+    "\\Infrastructure",
+    "\\WebApplication1",
+    "\\WebApplication1\\bin",
+    "\\WebApplication1\\Controllers"
+  ],
+  "SelectedNode": "\\WebApplication1\\Controllers\\WeatherForecastController.cs",
+  "PreviewInSolutionExplorer": false
+}

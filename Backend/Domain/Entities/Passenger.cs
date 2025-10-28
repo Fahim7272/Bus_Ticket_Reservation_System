@@ -6,5 +6,6 @@ public class Passenger
     public string Name { get; set; } = string.Empty;
     public string MobileNumber { get; set; } = string.Empty;
     public string? Email { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

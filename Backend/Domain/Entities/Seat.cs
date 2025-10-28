@@ -8,14 +8,13 @@ public class Seat
     public int Row { get; set; }
     public int Column { get; set; }
     public SeatType SeatType { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public virtual Bus Bus { get; set; } = null!;
+    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }
 
 public enum SeatType
 {
     Regular,
-    Premium,
-    Sleeper
+    Premium
 }

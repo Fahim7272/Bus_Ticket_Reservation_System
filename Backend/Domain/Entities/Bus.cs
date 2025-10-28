@@ -8,15 +8,13 @@ public class Bus
     public string BusNumber { get; set; } = string.Empty;
     public int TotalSeats { get; set; }
     public BusType BusType { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public virtual ICollection<BusSchedule> BusSchedules { get; set; } = new List<BusSchedule>();
     public virtual ICollection<Seat> Seats { get; set; } = new List<Seat>();
 }
 
 public enum BusType
 {
     AC,
-    NonAC,
-    Sleeper,
-    Seater
+    NonAC
 }

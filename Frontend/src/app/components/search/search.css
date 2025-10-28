@@ -1,3 +1,7 @@
+/* ============================================
+   SEARCH PAGE - COMPLETE STYLES
+   ============================================ */
+
 .search-page-wrapper {
   min-height: 100vh;
   width: 100%;
@@ -24,15 +28,18 @@
   background: white;
   border-radius: 10px;
   padding: 40px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* Search Inputs Row */
+/* ============================================
+   SEARCH INPUTS ROW
+   ============================================ */
+
 .search-inputs-row {
   display: grid;
   grid-template-columns: 1fr auto 1fr 200px 200px;
   gap: 15px;
-  align-items: end;
+  align-items: center;
   margin-bottom: 25px;
 }
 
@@ -81,36 +88,62 @@
   cursor: not-allowed;
 }
 
-/* Swap Button */
+/* ============================================
+   SWAP BUTTON - SMALLER & ALIGNED
+   ============================================ */
+
 .swap-button-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 8px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding-top: 20px; /* Aligns with middle of input boxes */
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .swap-icon-btn {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #d8d8d8;
-  border-radius: 50%;
-  background: white;
-  color: #cc0000;
-  font-size: 16px;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px;
+  min-height: 38px;
+  border: 1.5px solid #dc143c !important;
+  border-radius: 50% !important;
+  background: white !important;
+  color: #dc143c !important;
   cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: all 0.3s ease;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .swap-icon-btn:hover {
-  background: #fff5f5;
-  border-color: #cc0000;
+  background: #dc143c !important;
+  color: white !important;
   transform: rotate(180deg);
+  border-width: 1.5px !important;
+  box-shadow: 0 4px 10px rgba(220, 20, 60, 0.2);
 }
 
-/* Trending Searches */
+.swap-icon-btn:active {
+  transform: rotate(180deg) scale(0.95);
+}
+
+.swap-icon-btn i {
+  font-size: 13px !important;
+  color: inherit !important;
+  display: inline-block !important;
+  visibility: visible !important;
+}
+
+/* ============================================
+   TRENDING SEARCHES
+   ============================================ */
+
 .trending-searches-section {
   padding: 20px 0;
   border-top: 1px solid #e8e8e8;
@@ -122,6 +155,7 @@
   font-weight: 600;
   color: #666;
   margin-right: 15px;
+  display: inline-block;
 }
 
 .trending-buttons {
@@ -152,7 +186,10 @@
   margin: 0 5px;
 }
 
-/* Search Button */
+/* ============================================
+   SEARCH BUTTON
+   ============================================ */
+
 .search-button-wrapper {
   text-align: center;
   padding-top: 10px;
@@ -183,7 +220,10 @@
   transform: translateY(0);
 }
 
-/* Responsive */
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
 @media (max-width: 1024px) {
   .search-inputs-row {
     grid-template-columns: 1fr;
@@ -191,7 +231,7 @@
   }
   
   .swap-button-wrapper {
-    display: none;
+    display: none !important;
   }
   
   .trending-buttons {
@@ -207,5 +247,25 @@
   .btn-search-bus {
     padding: 12px 60px;
     font-size: 14px;
+  }
+  
+  .trending-label {
+    display: block;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-background {
+    padding: 20px 10px;
+  }
+  
+  .search-card {
+    padding: 20px 15px;
+  }
+  
+  .btn-search-bus {
+    width: 100%;
+    padding: 12px 20px;
   }
 }

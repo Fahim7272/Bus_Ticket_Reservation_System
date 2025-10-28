@@ -217,13 +217,18 @@
 }
 
 .bus-row {
-  display: grid;
-  grid-template-columns: 220px 140px 100px 140px 1fr;
-  gap: 20px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  gap: 20px;
 }
 
+
 /* Company Info */
+.bus-company {
+  flex: 0 0 220px;
+}
+
 .bus-company h4 {
   font-size: 16px;
   font-weight: 600;
@@ -234,7 +239,7 @@
 .bus-code {
   font-size: 12px;
   color: #718096;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .bus-type-badge {
@@ -261,6 +266,7 @@
 /* Timing */
 .bus-timing {
   text-align: center;
+  min-width: 120px;
 }
 
 .timing-label {
@@ -283,6 +289,16 @@
   color: #718096;
 }
 
+.middle-timing-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 /* Route */
 .bus-route {
   display: flex;
@@ -301,9 +317,13 @@
   color: #4a5568;
 }
 
-/* Booking */
+/* Booking Section */
 .bus-booking {
-  text-align: center;
+  flex: 0 0 200px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .badge-no-charge {
@@ -332,11 +352,13 @@
   text-transform: uppercase;
   background-color: #dc143c;
   border: none;
+  white-space: nowrap;
 }
 
 .view-seats-btn:hover {
   background-color: #c41230;
 }
+
 
 /* Inline Seat Panel */
 .seat-expansion-panel {
@@ -579,18 +601,28 @@
 
 @media (max-width: 1200px) {
   .bus-row {
-    grid-template-columns: 180px 120px 80px 120px 1fr;
-    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .middle-timing-section {
+    width: 100%;
+    order: 2;
   }
 }
 
 @media (max-width: 768px) {
-  .filters-row {
-    grid-template-columns: repeat(2, 1fr);
+  .bus-row {
+    flex-direction: column;
+    text-align: center;
   }
   
-  .bus-row {
-    grid-template-columns: 1fr;
-    text-align: center;
+  .bus-company,
+  .bus-booking {
+    width: 100%;
+  }
+  
+  .middle-timing-section {
+    flex-direction: column;
+    gap: 15px;
   }
 }

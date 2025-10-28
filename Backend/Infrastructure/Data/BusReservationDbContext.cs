@@ -21,27 +21,15 @@ public class BusReservationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Bus
-        modelBuilder.Entity<Bus>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.CompanyName).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.BusName).IsRequired().HasMaxLength(100);
-        });
-
-        // Route
-        modelBuilder.Entity<Route>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.FromCity).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.ToCity).IsRequired().HasMaxLength(100);
-        });
-
         // BusSchedule
         modelBuilder.Entity<BusSchedule>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Price).HasPrecision(18, 2);
+
+            // JourneyDate 
+            entity.Property(e => e.JourneyDate)
+                .HasColumnType("timestamp without time zone");
 
             entity.HasOne(e => e.Bus)
                 .WithMany(b => b.BusSchedules)
@@ -52,31 +40,15 @@ public class BusReservationDbContext : DbContext
                 .HasForeignKey(e => e.RouteId);
         });
 
-        // Seat
-        modelBuilder.Entity<Seat>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.SeatNumber).IsRequired().HasMaxLength(10);
-
-            entity.HasOne(e => e.Bus)
-                .WithMany(b => b.Seats)
-                .HasForeignKey(e => e.BusId);
-        });
-
-        // Passenger
-        modelBuilder.Entity<Passenger>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.MobileNumber).IsRequired().HasMaxLength(20);
-        });
-
-        // Ticket
+        // BookingDate
         modelBuilder.Entity<Ticket>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Price).HasPrecision(18, 2);
             entity.Property(e => e.BookingReference).IsRequired().HasMaxLength(50);
+
+            entity.Property(e => e.BookingDate)
+                .HasColumnType("timestamp without time zone");
 
             entity.HasOne(e => e.BusSchedule)
                 .WithMany(bs => bs.Tickets)
@@ -90,5 +62,8 @@ public class BusReservationDbContext : DbContext
                 .WithMany(p => p.Tickets)
                 .HasForeignKey(e => e.PassengerId);
         });
+
+        
     }
+
 }

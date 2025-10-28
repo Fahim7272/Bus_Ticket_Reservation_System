@@ -1,0 +1,23 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Tt]emp/
+
+# Packages
+*.nupkg
+*.snupkg
+*.tmp
+
+# Others
+*.vsidx
+*.cache
+*.pdb
+*.dbmdl

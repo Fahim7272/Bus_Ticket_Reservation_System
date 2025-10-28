@@ -1,0 +1,209 @@
+<div class="seat-selection-wrapper" *ngIf="seatPlan">
+  <!-- Header -->
+  <div class="seat-header">
+    <div class="container">
+      <button class="back-btn" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+      </button>
+      <div class="header-info">
+        <h5>{{ seatPlan.companyName }} - {{ seatPlan.busName }}</h5>
+        <p>{{ seatPlan.fromCity }} <i class="fas fa-arrow-right"></i> {{ seatPlan.toCity }} | {{ seatPlan.journeyDate | date:'mediumDate' }} | {{ seatPlan.startTime }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container seat-container">
+    <div class="row">
+      <!-- Seat Layout -->
+      <div class="col-lg-7">
+        <div class="seat-layout-box">
+          <!-- Legend -->
+          <div class="seat-legend">
+            <div class="legend-row">
+              <div class="legend-item">
+                <div class="legend-seat booked"></div>
+                <span>BOOKED (M)</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-seat booked-f"></div>
+                <span>BOOKED (F)</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-seat blocked"></div>
+                <span>BLOCKED</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-seat available"></div>
+                <span>AVAILABLE</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-seat selected"></div>
+                <span>SELECTED</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-seat sold"></div>
+                <span>SOLD (M)</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-seat sold-f"></div>
+                <span>SOLD (F)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seat Grid -->
+          <div class="seat-grid-wrapper">
+            <div class="seat-grid">
+              <div class="seat-row" *ngFor="let row of getGridSeats()">
+                <div 
+                  *ngFor="let seat of row"
+                  [ngClass]="getSeatClass(seat)"
+                  (click)="toggleSeat(seat)"
+                  [title]="seat.seatNumber">
+                  <i class="fas fa-couch"></i>
+                  <span>{{ seat.seatNumber }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Driver Section -->
+          <div class="driver-section">
+            <i class="fas fa-steering-wheel"></i>
+            <span>Driver</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Form -->
+      <div class="col-lg-5">
+        <div class="booking-form-box">
+          <h5 class="form-title">BOARDING/DROPPING:</h5>
+
+          <!-- Boarding Point -->
+          <div class="form-group">
+            <label class="form-label">BOARDING POINT*</label>
+            <select 
+              class="form-control"
+              [(ngModel)]="passengerInfo.boardingPoint">
+              <option *ngFor="let point of seatPlan.boardingPoints" [value]="point">
+                {{ point }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Dropping Point -->
+          <div class="form-group">
+            <label class="form-label">DROPPING POINT*</label>
+            <select 
+              class="form-control"
+              [(ngModel)]="passengerInfo.droppingPoint">
+              <option *ngFor="let point of seatPlan.droppingPoints" [value]="point">
+                {{ point }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Mobile Number -->
+          <div class="form-group">
+            <label class="form-label">MOBILE NUMBER*</label>
+            <input 
+              type="tel"
+              class="form-control"
+              [(ngModel)]="passengerInfo.mobile"
+              placeholder="Enter mobile number">
+          </div>
+
+          <!-- Passenger Name -->
+          <div class="form-group">
+            <label class="form-label">PASSENGER NAME*</label>
+            <input 
+              type="text"
+              class="form-control"
+              [(ngModel)]="passengerInfo.name"
+              placeholder="Enter passenger name">
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label">EMAIL (OPTIONAL)</label>
+            <input 
+              type="email"
+              class="form-control"
+              [(ngModel)]="passengerInfo.email"
+              placeholder="Enter email address">
+          </div>
+
+          <!-- Selected Seats -->
+          <div class="selected-seats" *ngIf="selectedSeats.length > 0">
+            <h6>Selected Seats:</h6>
+            <div class="seats-badge-list">
+              <span class="seat-badge" *ngFor="let seat of selectedSeats">
+                {{ seat.seatNumber }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Fare Breakdown -->
+          <div class="fare-section">
+            <div class="fare-row">
+              <span>Seat Fare ({{ selectedSeats.length }} × ৳{{ seatPlan.price }})</span>
+              <span class="fare-value">৳{{ selectedSeats.length * seatPlan.price }}</span>
+            </div>
+            <div class="fare-row">
+              <span>Service Charge</span>
+              <span class="fare-value text-success">৳0</span>
+            </div>
+            <div class="fare-row">
+              <span>PGWC Charge</span>
+              <span class="fare-value">৳{{ selectedSeats.length > 0 ? 8 : 0 }}</span>
+            </div>
+            <div class="fare-row fare-total">
+              <span>Total Discount:</span>
+              <span class="text-success">৳{{ selectedSeats.length * 20 }}</span>
+            </div>
+            <div class="fare-row fare-grand-total">
+              <span>Total:</span>
+              <span>৳{{ getTotalAmount() }}</span>
+            </div>
+          </div>
+
+          <!-- Terms -->
+          <div class="terms-check">
+            <input type="checkbox" id="terms" checked>
+            <label for="terms">
+              By logging in you are agreeing to the 
+              <a href="#">Terms & Conditions</a> and 
+              <a href="#">Privacy Notice</a> of bdjobs
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            class="btn btn-submit"
+            (click)="bookSeats()"
+            [disabled]="loading || selectedSeats.length === 0">
+            <span *ngIf="!loading">SUBMIT</span>
+            <span *ngIf="loading">
+              <span class="spinner-border spinner-border-sm"></span> Processing...
+            </span>
+          </button>
+
+          <!-- Login Link -->
+          <div class="login-link">
+            <small>
+              I have already verified my phone number, and have a password. 
+              <a href="#">Login with password. Click here</a>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading && !seatPlan" class="text-center py-5">
+  <div class="spinner-border" role="status"></div>
+  <p class="mt-3">Loading seat plan...</p>
+</div>

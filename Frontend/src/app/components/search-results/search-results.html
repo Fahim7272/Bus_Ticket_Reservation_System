@@ -1,0 +1,247 @@
+<div class="search-results-container">
+  <!-- Header with Background Image -->
+  <div class="results-header-wrapper">
+    <div class="header-background-overlay"></div>
+    <div class="container header-content-container">
+      <div class="header-left">
+        <div class="onward-badge">ONWARD</div>
+        <h3 class="trip-route-title">{{ searchParams.from }} To {{ searchParams.to }} On {{ formatDate(searchParams.journeyDate) }}</h3>
+        <div class="header-stats">
+          <span class="stat-item">Total Buses Found: <strong>{{ buses.length }}</strong></span>
+          <span class="stat-divider">|</span>
+          <span class="stat-item">Total Operators Found: <strong>{{ buses.length }}</strong></span>
+          <span class="stat-divider">|</span>
+          <span class="stat-item">Total Seats Available: <strong>{{ getTotalAvailableSeats() }}</strong></span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="btn btn-modify-search" (click)="modifySearch()">
+          MODIFY SEARCH
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-bar">
+    <div class="container">
+      <div class="filters-row">
+        <button class="filter-btn"><i class="fas fa-bars"></i> SORT BY</button>
+        <button class="filter-btn">DEPARTURE TIME <i class="fas fa-caret-up"></i></button>
+        <button class="filter-btn">AVAILABLE SEATS <i class="fas fa-sort"></i></button>
+        <button class="filter-btn">FARE <i class="fas fa-sort"></i></button>
+        <button class="filter-btn">SPECIAL OFFERS <i class="fas fa-sort"></i></button>
+        <button class="filter-btn filter-btn-danger"><i class="fas fa-filter"></i> FILTER BY</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="container results-container">
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-danger" role="status"></div>
+      <p class="mt-3">Searching for buses...</p>
+    </div>
+
+    <!-- No Results -->
+    <div *ngIf="!loading && buses.length === 0" class="text-center py-5">
+      <h5>No buses found</h5>
+      <p>Try modifying your search</p>
+    </div>
+
+    <!-- Bus Cards -->
+    <div *ngFor="let bus of buses" class="bus-card-wrapper">
+      <div class="bus-card">
+        <div class="bus-row">
+          <!-- Company Info -->
+          <div class="bus-company">
+            <h4>{{ bus.companyName }}</h4>
+            <p class="bus-code">{{ bus.busName }}</p>
+            <div class="bus-type-badge">
+              <i class="fas fa-snowflake" *ngIf="bus.busType === 'AC'"></i>
+              {{ bus.busType }}
+            </div>
+            <p class="cancellation-link">Cancellation policy</p>
+          </div>
+
+          <!-- Timing -->
+          <div class="bus-timing">
+            <div class="timing-label">Starting</div>
+            <div class="time">{{ bus.startTime }}</div>
+            <div class="location">{{ searchParams.from }}</div>
+          </div>
+
+          <!-- Route Icon -->
+          <div class="bus-route">
+            <i class="fas fa-bus"></i>
+            <div class="seats-indicator">Seats Left: <strong class="text-danger">{{ bus.seatsLeft }}</strong></div>
+          </div>
+
+          <!-- Arrival -->
+          <div class="bus-timing">
+            <div class="timing-label">Arrival</div>
+            <div class="time">{{ bus.arrivalTime }}</div>
+            <div class="location">{{ searchParams.to }}</div>
+          </div>
+
+          <!-- Price & Action -->
+          <div class="bus-booking">
+            <div class="badge-no-charge">NO EXTRA CHARGE</div>
+            <div class="price">৳{{ bus.price }}</div>
+            <button 
+              class="btn btn-danger view-seats-btn" 
+              (click)="toggleSeats(bus.busScheduleId)">
+              {{ expandedBusId === bus.busScheduleId ? 'HIDE SEATS' : 'VIEW SEATS' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inline Seat Selection Panel -->
+      <div class="seat-expansion-panel" *ngIf="expandedBusId === bus.busScheduleId" [@slideDown]>
+        <div *ngIf="loadingSeats" class="text-center py-4">
+          <div class="spinner-border text-danger"></div>
+          <p class="mt-2">Loading seats...</p>
+        </div>
+
+        <div *ngIf="!loadingSeats && seatPlan" class="seat-panel-content">
+          <div class="row">
+            <!-- Seat Layout (Left Side) -->
+            <div class="col-lg-7">
+              <!-- Legend -->
+              <div class="seat-legend">
+                <div class="legend-item">
+                  <i class="fas fa-couch legend-icon booked-m"></i>
+                  <span>BOOKED (M)</span>
+                </div>
+                <div class="legend-item">
+                  <i class="fas fa-couch legend-icon booked-f"></i>
+                  <span>BOOKED (F)</span>
+                </div>
+                <div class="legend-item">
+                  <i class="fas fa-couch legend-icon blocked"></i>
+                  <span>BLOCKED</span>
+                </div>
+                <div class="legend-item">
+                  <i class="fas fa-couch legend-icon available"></i>
+                  <span>AVAILABLE</span>
+                </div>
+                <div class="legend-item">
+                  <i class="fas fa-couch legend-icon selected"></i>
+                  <span>SELECTED</span>
+                </div>
+                <div class="legend-item">
+                  <i class="fas fa-couch legend-icon sold-m"></i>
+                  <span>SOLD (M)</span>
+                </div>
+                <div class="legend-item">
+                  <i class="fas fa-couch legend-icon sold-f"></i>
+                  <span>SOLD (F)</span>
+                </div>
+              </div>
+
+              <!-- Seat Grid -->
+              <div class="seat-grid-container">
+                <div class="driver-icon">
+                  <i class="fas fa-steering-wheel"></i>
+                </div>
+                <div class="seat-grid">
+                  <div class="seat-row" *ngFor="let row of getGridSeats()">
+                    <div 
+                      *ngFor="let seat of row"
+                      [ngClass]="getSeatClass(seat)"
+                      (click)="toggleSeat(seat)"
+                      [title]="seat.seatNumber + ' - ' + seat.status">
+                      <i class="fas fa-couch"></i>
+                      <span>{{ seat.seatNumber }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Booking Form (Right Side) -->
+            <div class="col-lg-5">
+              <div class="booking-form">
+                <h5 class="form-section-title">BOARDING/DROPPING:</h5>
+
+                <!-- Boarding Point -->
+                <div class="form-group">
+                  <label class="form-label">BOARDING POINT*</label>
+                  <select class="form-control" [(ngModel)]="passengerInfo.boardingPoint">
+                    <option *ngFor="let point of seatPlan.boardingPoints" [value]="point">
+                      {{ point }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Dropping Point -->
+                <div class="form-group">
+                  <label class="form-label">DROPPING POINT*</label>
+                  <select class="form-control" [(ngModel)]="passengerInfo.droppingPoint">
+                    <option *ngFor="let point of seatPlan.droppingPoints" [value]="point">
+                      {{ point }}
+                    </option>
+                  </select>
+                </div>
+
+                <h5 class="form-section-title mt-4">SEAT INFORMATION:</h5>
+
+                <!-- Fare Breakdown -->
+                <div class="fare-info">
+                  <div class="fare-row">
+                    <span>Seat Fare:</span>
+                    <span>৳ {{ getTotalAmount() }}</span>
+                  </div>
+                  <div class="fare-row">
+                    <span>Service Charge:</span>
+                    <span>৳ 0</span>
+                  </div>
+                  <div class="fare-row">
+                    <span>PGW Charge:</span>
+                    <span>৳ 0</span>
+                  </div>
+                </div>
+
+                <!-- Mobile Number -->
+                <div class="form-group">
+                  <label class="form-label">MOBILE NUMBER*</label>
+                  <input 
+                    type="tel"
+                    class="form-control"
+                    [(ngModel)]="passengerInfo.mobile"
+                    placeholder="Enter mobile number">
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                  class="btn btn-danger btn-submit"
+                  (click)="bookSeats()"
+                  [disabled]="bookingInProgress || selectedSeats.length === 0 || !passengerInfo.mobile">
+                  <span *ngIf="!bookingInProgress">SUBMIT</span>
+                  <span *ngIf="bookingInProgress">
+                    <span class="spinner-border spinner-border-sm"></span> Processing...
+                  </span>
+                </button>
+
+                <!-- Terms -->
+                <div class="terms-notice">
+                  <p class="mb-1">
+                    I have already verified my phone number, and have a password. 
+                    <a href="#" class="text-danger">Login with password. Click here</a>
+                  </p>
+                  <p class="text-muted small">
+                    By logging in you are agreeing to the 
+                    <a href="#" class="text-danger">Terms & Conditions</a> and 
+                    <a href="#" class="text-danger">Privacy Notice</a> of bdtickets
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

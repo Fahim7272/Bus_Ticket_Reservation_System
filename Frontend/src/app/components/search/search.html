@@ -1,0 +1,78 @@
+<div class="search-page-wrapper">
+  <div class="search-background">
+    <div class="search-container">
+      <div class="search-card">
+        <!-- Search Form -->
+        <div class="search-inputs-row">
+          <!-- Going From -->
+          <div class="input-group-custom from-input">
+            <label class="input-label">GOING FROM</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              [(ngModel)]="searchParams.from"
+              placeholder="Dhaka">
+          </div>
+
+          <!-- Swap Button -->
+          <div class="swap-button-wrapper">
+            <button class="swap-icon-btn" (click)="swapCities()" type="button">
+              <i class="fas fa-exchange-alt"></i>
+            </button>
+          </div>
+
+          <!-- Going To -->
+          <div class="input-group-custom to-input">
+            <label class="input-label">GOING TO</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              [(ngModel)]="searchParams.to"
+              placeholder="Chittagong">
+          </div>
+
+          <!-- Journey Date -->
+          <div class="input-group-custom date-input">
+            <label class="input-label">JOURNEY DATE <i class="fas fa-caret-down"></i></label>
+            <input 
+              type="date" 
+              class="form-input" 
+              [(ngModel)]="searchParams.journeyDate"
+              placeholder="Select date">
+          </div>
+
+          <!-- Return Date -->
+          <div class="input-group-custom date-input">
+            <label class="input-label">RETURN DATE</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              placeholder="Select date"
+              disabled>
+          </div>
+        </div>
+
+        <!-- Trending Searches -->
+        <div class="trending-searches-section">
+          <span class="trending-label">Trending Searches:</span>
+          <div class="trending-buttons">
+            <button 
+              *ngFor="let search of trendingSearches"
+              class="trending-route-btn"
+              type="button"
+              (click)="selectTrending(search)">
+              {{search.from}} <i class="fas fa-arrow-right"></i> {{search.to}}
+            </button>
+          </div>
+        </div>
+
+        <!-- Search Button -->
+        <div class="search-button-wrapper">
+          <button class="btn-search-bus" (click)="searchBuses()" type="button">
+            Search Bus
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
